@@ -4,21 +4,41 @@ bundle: {
 	instances: {
 		"radarr": {
 			module: url: "oci://ghcr.io/stefanprodan/modules/flux-helm-release"
-			namespace: "radarr"
+			namespace: "default"
 			values: {
 				repository: url: "https://k8s-home-lab.github.io/helm-charts/"
 				chart: {
 					name: "radarr"
 				}
 				helmValues: {
-					"env.TZ": "America/Los_Angeles"
+					image: {
+						repository: "linuxserver/radarr"
+						tag: "5.18.4"
+					}
+					env: TZ: "America/Los_Angeles"
 					metrics: enabled: false
+					persistence: {
+						config: enabled: true
+					}
+					tolerations: [{
+						key:      "special"
+						operator: "Equal"
+						value:    "storage"
+						effect:   "NoSchedule"
+					}]
+					affinity: nodeAffinity: requiredDuringSchedulingIgnoredDuringExecution: nodeSelectorTerms: [{
+						matchExpressions: [{
+							key:      "storage-node"
+							operator: "In"
+							values: ["true"]
+						}]
+					}]
 				}
 			}
 		}
-		"ingress": {
+		"radarr-ingress": {
 			module: url: "oci://ghcr.io/anthonybrice/modules/tailscale-ingress"
-			namespace: "radarr"
+			namespace: "default"
 			values: {
 				serviceName: "radarr"
 				servicePort: name: "http"

@@ -1,19 +1,19 @@
 bundle: {
 	apiVersion: "v1alpha1"
-	name:       "plex"
+	name:       "sonarr"
 	instances: {
-		"plex": {
+		"sonarr": {
 			module: url: "oci://ghcr.io/stefanprodan/modules/flux-helm-release"
 			namespace: "default"
 			values: {
 				repository: url: "https://k8s-home-lab.github.io/helm-charts/"
 				chart: {
-					name: "plex"
+					name: "sonarr"
 				}
 				helmValues: {
 					image: {
-						repository: "linuxserver/plex"
-						tag: "1.41.4"
+						repository: "linuxserver/sonarr"
+						tag: "4.0.13"
 					}
 					env: TZ: "America/Los_Angeles"
 					metrics: enabled: false
@@ -36,13 +36,13 @@ bundle: {
 				}
 			}
 		}
-		"plex-ingress": {
+		"sonarr-ingress": {
 			module: url: "oci://ghcr.io/anthonybrice/modules/tailscale-ingress"
 			namespace: "default"
 			values: {
-				serviceName: "plex"
+				serviceName: "sonarr"
 				servicePort: name: "http"
-				host: "plex"
+				host: "sonarr"
 			}
 		}
 	}

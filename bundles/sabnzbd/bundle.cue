@@ -4,7 +4,7 @@ bundle: {
 	instances: {
 		"sabnzbd": {
 			module: url: "oci://ghcr.io/stefanprodan/modules/flux-helm-release"
-			namespace: "sabnzbd"
+			namespace: "default"
 			values: {
 				repository: url: "https://k8s-at-home.com/charts/"
 				chart: {
@@ -17,7 +17,6 @@ bundle: {
 					}
 					env: {
 						TZ: "America/Los_Angeles"
-						HOST_WHITELIST_ENTRIES: "sabnzbd.ratfish-nominal.ts.net"
 					}
 					persistence: {
 						config: enabled: true
@@ -25,11 +24,13 @@ bundle: {
 							enabled: true
 							accessMode: "ReadWriteOnce"
 							size: "10Gi"
+							mountPath: "/media"
 						}
 						downloads: {
 							enabled: true
 							accessMode: "ReadWriteOnce"
 							size: "10Gi"
+							mountPath: "/downloads"
 						}
 					}
 					tolerations: [{
@@ -53,9 +54,9 @@ bundle: {
 				}
 			}
 		}
-		"ingress": {
+		"sabnzbd-ingress": {
 			module: url: "oci://ghcr.io/anthonybrice/modules/tailscale-ingress"
-			namespace: "sabnzbd"
+			namespace: "default"
 			values: {
 				serviceName: "sabnzbd"
 				servicePort: name: "http"
